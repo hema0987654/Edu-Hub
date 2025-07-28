@@ -40,7 +40,7 @@ async getStudentsByCourse(courseId: number) {
   `;
   try {
     const result = await pool.query(query, [courseId]);
-    return result.rows;
+    return result.rows[0];
   } catch (error) {
     console.error("Error fetching students by course:", error);
     throw error;

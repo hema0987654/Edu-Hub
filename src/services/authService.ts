@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import userDB from "../models/autheDB.js";
 import { genartRefreshToken,genartToken ,generateResetToken } from "../utils/token.js";
-import sendResetEmail from "./emailService.js";
+import {sendResetEmail} from "./emailService.js";
 
 interface CreateUser {
   username: string;

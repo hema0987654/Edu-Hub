@@ -32,16 +32,17 @@ const userDB = {
   },
 
   async saveRefreshToken(userId: number, refreshToken: string) {
-    const query = 'UPDATE users SET refresh_token = $1 WHERE id = $2';
+    const query = "UPDATE users SET refresh_token = $1 WHERE id = $2";
     try {
-    await pool.query(query, [refreshToken, userId]);
+      await pool.query(query, [refreshToken, userId]);
     } catch (error) {
       console.error("Error saving refresh token:", error);
       throw error;
     }
   },
+
   async updatePassword(userId: number, newPassword: string) {
-    const query = 'UPDATE users SET password = $1 WHERE id = $2';
+    const query = "UPDATE users SET password = $1 WHERE id = $2";
     const values = [newPassword, userId];
     try {
       await pool.query(query, values);
@@ -50,8 +51,18 @@ const userDB = {
       console.error("Error updating password:", error);
       return { success: false, message: "Failed to update password" };
     }
+  },
 
-}
-}
+  async getUserById(id: number) {
+    const query = "SELECT * FROM users WHERE id = $1";
+    try {
+      const result = await pool.query(query, [id]);
+      return result.rows[0];
+    } catch (error) {
+      console.error("Error fetching user by ID:", error);
+      throw error;
+    }
+  },
+};
 
 export default userDB;

@@ -1,15 +1,28 @@
 import enrollmentsDB from "../models/enrollmentsDB.js";
+import { sendEnrollmentEmail } from "./emailService.js";
+import coursesDB from '../models/coursesDB.js';
+import userDB from '../models/autheDB.js'
+
 
 class EnrollmentService {
-  
   async enroll(studentId: number, courseId: number) {
     try {
-      const alreadyEnrolled = await enrollmentsDB.isAlreadyEnrolled(studentId, courseId);
+      const alreadyEnrolled = await enrollmentsDB.isAlreadyEnrolled(
+        studentId,
+        courseId
+      );
       if (alreadyEnrolled) {
-        return { success: false, message: "You are already enrolled in this course" };
+        return {
+          success: false,
+          message: "You are already enrolled in this course",
+        };
       }
 
       const enrollment = await enrollmentsDB.enroll(studentId, courseId);
+      const student = await userDB.getUserById(studentId);
+      const course = await coursesDB.getCoursesById(courseId);
+
+      await sendEnrollmentEmail(student.email, course.title);
       return { success: true, message: "Enrollment successful", enrollment };
     } catch (error) {
       console.error("Error in enrollment service:", error);
